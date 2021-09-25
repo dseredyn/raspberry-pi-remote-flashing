@@ -192,6 +192,7 @@ function create_image() {
     sudo cp -rv "${SOURCES_PATH}/u-boot-${U_BOOT_VER}/u-boot.bin" /mnt/rpi/
     sudo cp -rv "${BUILD_PATH}/boot.scr.uimg" /mnt/rpi/
     sudo cp -rv "${SCRIPT_PATH}/env.txt" /mnt/rpi/
+    sudo cp -rv "${SCRIPT_PATH}/kernimg.txt" /mnt/rpi/
 
     sync
     sudo umount /mnt/rpi
