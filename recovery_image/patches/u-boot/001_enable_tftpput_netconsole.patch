@@ -1,0 +1,18 @@
+diff -ru u-boot-2021.07_orig/configs/rpi_4_32b_defconfig u-boot-2021.07/configs/rpi_4_32b_defconfig
+--- u-boot-2021.07_orig/configs/rpi_4_32b_defconfig	2021-07-05 17:11:28.000000000 +0200
++++ u-boot-2021.07/configs/rpi_4_32b_defconfig	2021-09-24 21:44:09.822298550 +0200
+@@ -59,3 +59,5 @@
+ CONFIG_ADDR_MAP=y
+ CONFIG_SYS_NUM_ADDR_MAP=2
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_CMD_TFTPPUT=y
++CONFIG_NETCONSOLE=y
+diff -ru u-boot-2021.07_orig/configs/rpi_4_defconfig u-boot-2021.07/configs/rpi_4_defconfig
+--- u-boot-2021.07_orig/configs/rpi_4_defconfig	2021-07-05 17:11:28.000000000 +0200
++++ u-boot-2021.07/configs/rpi_4_defconfig	2021-09-24 21:43:59.646094957 +0200
+@@ -57,3 +57,5 @@
+ CONFIG_CONSOLE_SCROLL_LINES=10
+ CONFIG_PHYS_TO_BUS=y
+ CONFIG_OF_LIBFDT_OVERLAY=y
++CONFIG_CMD_TFTPPUT=y
++CONFIG_NETCONSOLE=y

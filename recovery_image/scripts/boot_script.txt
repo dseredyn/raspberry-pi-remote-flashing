@@ -119,7 +119,7 @@ if test ${filesize} > 0; then
     tftpput ${loadaddr} 4 ${serverip}:${ethaddr}/${status}
 fi;
 
-# load cmdline.txt file to memory (used foor bootcmd)
+# load cmdline.txt file to memory (used for bootcmd)
 load mmc 0:2 0x00200008 cmdline.txt
 ## calc new filesize
 setexpr cmdline_size $filesize + 8
@@ -132,35 +132,62 @@ mw.l 0x00200004 0x3d656e69
 env import -t 0x00200000 $cmdline_size cmdline
 
 echo ""
-echo "Original bootargs:"
+echo "Kernel cmdline:"
 printenv cmdline
 echo ""
 
-echo "substituting rootfs partition: mmcblk0p2 -> mmcblk0p3"
-setexpr cmdline sub mmcblk0p2 mmcblk0p3
+
+
+# load kernimg.txt file to memory (used to select kernel image)
+load mmc 0:2 0x00201008 kernimg.txt
+## calc new filesize
+setexpr kernimg_size $filesize + 8
+
+# modify memory, add "kernimg=" before the data (else env import wont work)
+mw.l 0x00201000 0x6e72656b   
+mw.l 0x00201004 0x3d676d69   
+
+# load the memory as env
+env import -t 0x00201000 $kernimg_size kernimg
+
 echo ""
-echo "substituting serial output: serial0 -> ttyS0"
-setexpr cmdline sub serial0 ttyS0
+echo "Kernel image file:"
+printenv kernimg
 echo ""
 
+
+
+#echo "substituting rootfs partition: mmcblk0p2 -> mmcblk0p3"
+#setexpr cmdline sub mmcblk0p2 mmcblk0p3
+#echo ""
+#echo "substituting serial output: serial0 -> ttyS0"
+#setexpr cmdline sub serial0 ttyS0
+#echo ""
+
 # Set boot command
-setenv bootargs ${cmdline} 8250.nr_uarts=1 initcall_blacklist=bcm2708_fb_init
+setenv bootargs "${cmdline}"
+# 8250.nr_uarts=1 initcall_blacklist=bcm2708_fb_init
 
 echo "New bootargs:"
 printenv bootargs
 echo ""
 
-echo "Loading DTB file:"
-printenv fdtfile
+#echo "Loading DTB file:"
+#printenv fdtfile
 
 # Load blobs to ram
-fatload mmc 0:2 ${fdt_addr_r} ${fdtfile}
+#fatload mmc 0:2 ${fdt_addr_r} ${fdtfile}
+echo "Setting address of DTB file"
+fdt addr ${fdt_addr} 
 echo ""
 
-echo "Loading Kernel image kernel7.img:"
-fatload mmc 0:2 ${kernel_addr_r} kernel7.img
+echo "Loading Kernel image ${kernimg}:"
+fatload mmc 0:2 ${kernel_addr_r} ${kernimg}
 echo ""
 
-echo "Booting.."
+#echo "Booting..."
 # Boot file kernel and device
-bootz ${kernel_addr_r} - ${fdt_addr_r}
+echo "To boot, execute: bootz ${kernel_addr_r} - ${fdt_addr}"
+
+bootz ${kernel_addr_r} - ${fdt_addr}
+
